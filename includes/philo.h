@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rboia-pe <rboia-pe@student.42porto.fr>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/07 02:19:58 by rboia-pe          #+#    #+#             */
+/*   Updated: 2023/04/07 02:19:58 by rboia-pe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <string.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <string.h>
 
 # define MAX_PHILOSOPHERS 200
 # define HASFORK 0
@@ -25,24 +37,24 @@
 
 typedef struct s_common
 {
-	pthread_mutex_t print;
-	pthread_mutex_t eat;
-	pthread_mutex_t end;
+	pthread_mutex_t	print;
+	pthread_mutex_t	eat;
+	pthread_mutex_t	end;
 }				t_common;
 
 // Structure to hold philosopher information
 typedef struct s_philo
 {
-	pthread_t	thread;
-	int			philosopher_number;
-	int			philo_amount;
-	int			actual_meal;
-	int			time_to_die;
-	int			time_to_eat;
-	int			time_to_sleep;
-	int			num_times_to_eat;
-	int			ending_flag;
-	int			eating_flag;
+	pthread_t		thread;
+	int				philosopher_number;
+	int				philo_amount;
+	int				actual_meal;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				num_times_to_eat;
+	int				ending_flag;
+	int				eating_flag;
 
 	size_t			last_meal;
 	size_t			start_time;
@@ -56,19 +68,20 @@ void	*philosopher_action(void *pointer);
 void	take_forks(t_philo *philosopher);
 void	put_forks(t_philo *philosopher);
 void	print_timestamp(char *action, t_philo *philosopher);
-//long	check_death(t_philo *philosopher);
-size_t		get_current_time(void);
+size_t	get_current_time(void);
 
 void	*watcher_routine(void *pointer);
+int		search_deads(t_philo *ph);
 int		check_every1_ate(t_philo *ph);
 void	ft_ending(t_philo *ph);
 int		check_end(t_philo *ph);
 void	destroy_mutex(char *s, t_philo *ph, pthread_mutex_t *fork);
 
-void	init_philo(t_philo *ph, pthread_mutex_t *fork, char **argv, t_common *common);
+void	init_philo(t_philo *ph, pthread_mutex_t *fork, \
+char **argv, t_common *common);
 void	init_mutex(t_philo *ph, t_common *common);
 void	start_routine(t_philo *ph, pthread_t watcher, pthread_mutex_t *fork);
 void	destroy_threads(t_philo *ph, t_common *common, pthread_mutex_t *fork);
 
-int	ft_atoi(const char *str);
+int		ft_atoi(const char *str);
 #endif

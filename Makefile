@@ -8,12 +8,12 @@ INCS = ./includes
 SRCS_DIR = ./srcs
 OBJS_DIR = ./objs
 
-SRC = philo
+SRC = main philo philo_utilities utils watcher
 
 SRCS = $(addprefix $(SRCS_DIR)/, $(addsuffix .c, $(SRC)))
 OBJS = $(addprefix $(OBJS_DIR)/, $(addsuffix .o, $(SRC)))
 
-CFLAGS = #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 BLUE=\033[0;34m
 
