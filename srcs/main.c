@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-void	init_mutex(t_philo *ph, t_common *common)
+void	init_mutex(t_common *common)
 {
 	pthread_mutex_init(&common->print, NULL);
 	pthread_mutex_init(&common->eat, NULL);
@@ -60,12 +60,19 @@ static int	check_args(int argc, char *argv[])
 time_to_sleep [number_of_times_each_philosopher_must_eat]\n", argv[0]);
 		return (EXIT_FAILURE);
 	}
-	if (*argv[1] > MAX_PHILOSOPHERS)
+	if (ft_atoi(argv[1]) > MAX_PHILOSOPHERS || ft_atoi(argv[1]) < 1)
 	{
 		printf("Invalid number of philosophers. Must be between 1 \
 and %d.\n", MAX_PHILOSOPHERS);
 		return (EXIT_FAILURE);
 	}
+	if (ft_atoi(argv[2]) < 0 || ft_atoi(argv[3]) < 0 || ft_atoi(argv[4]) < 0 \
+	|| (argv[5] && ft_atoi(argv[5]) < 0))
+	{
+		printf("Invalid argument. Every argument had to be positive.\n");
+		return (EXIT_FAILURE);
+	}
+	return (0);
 }
 
 int	main(int argc, char *argv[])
@@ -79,13 +86,14 @@ int	main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	memset(&common, 0, sizeof(t_common));
 	memset(&philosopher_info, 0, sizeof(t_philo));
+	memset(&the_watcher, 0, sizeof(pthread_t));
 	init_philo(philosopher_info, fork, argv, &common);
-	init_mutex(philosopher_info, &common);
+	init_mutex(&common);
 	if (philosopher_info[0].philo_amount == 1)
 	{
-		print_timestamp("has token his left fork", &philosopher_info[0]);
+		print_timestamp("has token his left fork", &philosopher_info[0], 1);
 		usleep(philosopher_info[0].time_to_die * 1000);
-		print_timestamp("died", &philosopher_info[0]);
+		print_timestamp("died", &philosopher_info[0], 2);
 		return (EXIT_SUCCESS);
 	}
 	start_routine(philosopher_info, the_watcher, fork);

@@ -13,7 +13,7 @@ SRC = main philo philo_utilities utils watcher
 SRCS = $(addprefix $(SRCS_DIR)/, $(addsuffix .c, $(SRC)))
 OBJS = $(addprefix $(OBJS_DIR)/, $(addsuffix .o, $(SRC)))
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 BLUE=\033[0;34m
 
@@ -49,7 +49,7 @@ clean:
 fclean: clean
 	@rm -rf $(NAME)
 
-re: fclean all
+re: clean fclean all
 
 author:
 	@echo Intra : rboia-pe;

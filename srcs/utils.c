@@ -42,14 +42,22 @@ size_t	get_current_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	print_timestamp(char *action, t_philo *philosopher)
+void	print_timestamp(char *action, t_philo *philosopher, int color)
 {
-	int	current_time;
+	int		current_time;
+	char	*color_code;
 
+	color_code = NULL;
+	if (color == 0)
+		color_code = GREEN;
+	else if (color == 1)
+		color_code = CYAN;
+	else if (color == 2)
+		color_code = RED;
 	pthread_mutex_lock(&philosopher->common->print);
 	current_time = get_current_time() - philosopher->start_time;
-	printf("%s%03d %s%d %s%s\n", ORANG, current_time, BLUE, \
-		philosopher->philosopher_number, RESET, action);
+	printf("%s%03d %s%d %s%s\n", YELLOW, current_time, BLUE, \
+		philosopher->philosopher_number, color_code, action);
 	pthread_mutex_unlock(&philosopher->common->print);
 }
 

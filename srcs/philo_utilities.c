@@ -15,9 +15,9 @@
 void	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->fork_left);
-	print_timestamp("has taken his left fork", philo);
+	print_timestamp("has taken his left fork", philo, 1);
 	pthread_mutex_lock(philo->fork_right);
-	print_timestamp("has taken his right fork", philo);
+	print_timestamp("has taken his right fork", philo, 1);
 }
 
 void	put_forks(t_philo *philosopher)

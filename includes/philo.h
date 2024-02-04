@@ -31,8 +31,11 @@
 # define EATING	1
 # define NOTEATING 0
 
+# define CYAN "\033[0;36m"
 # define BLUE "\033[0;34m"
-# define ORANG "\033[0;33m"
+# define YELLOW "\033[0;33m"
+# define GREEN "\033[0;32m"
+# define RED "\033[0;31m"
 # define RESET "\033[0m"
 
 typedef struct s_common
@@ -55,6 +58,7 @@ typedef struct s_philo
 	int				num_times_to_eat;
 	int				ending_flag;
 	int				eating_flag;
+	int				i;
 
 	size_t			last_meal;
 	size_t			start_time;
@@ -64,10 +68,11 @@ typedef struct s_philo
 }			t_philo;
 
 // Function declarations
+int		main(int argc, char *argv[]);
 void	*philosopher_action(void *pointer);
 void	take_forks(t_philo *philosopher);
 void	put_forks(t_philo *philosopher);
-void	print_timestamp(char *action, t_philo *philosopher);
+void	print_timestamp(char *action, t_philo *philosopher, int color);
 size_t	get_current_time(void);
 
 void	*watcher_routine(void *pointer);
@@ -78,8 +83,8 @@ int		check_end(t_philo *ph);
 void	destroy_mutex(char *s, t_philo *ph, pthread_mutex_t *fork);
 
 void	init_philo(t_philo *ph, pthread_mutex_t *fork, \
-char **argv, t_common *common);
-void	init_mutex(t_philo *ph, t_common *common);
+char	**argv, t_common *common);
+void	init_mutex(t_common *common);
 void	start_routine(t_philo *ph, pthread_t watcher, pthread_mutex_t *fork);
 void	destroy_threads(t_philo *ph, t_common *common, pthread_mutex_t *fork);
 

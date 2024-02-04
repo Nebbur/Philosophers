@@ -30,7 +30,7 @@ void	*watcher_routine(void *pointer)
 	t_philo	*ph;
 
 	ph = (t_philo *)pointer;
-	usleep(2000);
+	usleep(1000);
 	while (1)
 		if (search_deads(ph) == 1 || check_every1_ate(ph) == 1)
 			break ;
@@ -41,19 +41,19 @@ int	search_deads(t_philo *ph)
 {
 	int	i;
 
-	i = 0;
-	while (i < ph[0].philo_amount)
+	i = -1;
+	while (++i < ph[0].philo_amount)
 	{
 		pthread_mutex_lock(&ph->common->eat);
 		if (ph[i].eating_flag == NOTEATING && \
-		get_current_time() - ph[i].last_meal >= ph[i].time_to_die)
+		(int)(get_current_time() - ph[i].last_meal) >= ph[i].time_to_die)
 		{
+			ph->ending_flag = END;
 			ft_ending(ph);
-			print_timestamp("died", ph);
+			print_timestamp("died", ph, 2);
 			pthread_mutex_unlock(&ph->common->eat);
 			return (1);
 		}
-		i++;
 		pthread_mutex_unlock(&ph->common->eat);
 	}
 	return (0);
@@ -61,8 +61,8 @@ int	search_deads(t_philo *ph)
 
 int	check_every1_ate(t_philo *ph)
 {
-	int	i;
 	int	meal_num_reached;
+	int	i;
 
 	i = -1;
 	meal_num_reached = 0;
