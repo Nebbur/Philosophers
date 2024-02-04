@@ -15,8 +15,12 @@
 void	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->fork_left);
+	if (check_end(philo) == END)
+		return ;
 	print_timestamp("has taken his left fork", philo, 1);
 	pthread_mutex_lock(philo->fork_right);
+	if (check_end(philo) == END)
+		return ;
 	print_timestamp("has taken his right fork", philo, 1);
 }
 

@@ -43,10 +43,19 @@ char **argv, t_common *common)
 
 void	ft_dinner(t_philo *philo)
 {
+	if (check_end(philo) == END)
+		return ;
 	take_forks(philo);
+	pthread_mutex_lock(&philo->common->eat);
+	if (check_end(philo) == END)
+	{
+		pthread_mutex_unlock(&philo->common->eat);
+		pthread_mutex_unlock(philo->fork_left);
+		pthread_mutex_unlock(philo->fork_right);
+		return ;
+	}
 	print_timestamp("is eating", philo, 0);
 	philo->eating_flag = EATING;
-	pthread_mutex_lock(&philo->common->eat);
 	philo->actual_meal++;
 	philo->last_meal = get_current_time();
 	pthread_mutex_unlock(&philo->common->eat);
@@ -70,8 +79,10 @@ void	*philosopher_action(void *pointer)
 			break ;
 		print_timestamp("is sleeping", philo, 0);
 		usleep(philo->time_to_sleep * 1000);
+		if (check_end(philo) == END)
+			break ;
 		print_timestamp("is thinking", philo, 0);
-		usleep(10000);
+		usleep(1000);
 	}
 	return (NULL);
 }
