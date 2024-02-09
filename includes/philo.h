@@ -30,7 +30,10 @@
 # define END 1
 # define EATING	1
 # define NOTEATING 0
-
+# define LOCKED 1
+# define UNLOCKED 0
+# define SOME1DIED 1
+# define EVERY1ATE 1
 # define CYAN "\033[0;36m"
 # define BLUE "\033[0;34m"
 # define YELLOW "\033[0;33m"
@@ -59,7 +62,6 @@ typedef struct s_philo
 	int				ending_flag;
 	int				eating_flag;
 	int				i;
-
 	size_t			last_meal;
 	size_t			start_time;
 	t_common		*common;
@@ -83,7 +85,7 @@ int		check_end(t_philo *ph);
 void	destroy_mutex(char *s, t_philo *ph, pthread_mutex_t *fork);
 
 void	init_philo(t_philo *ph, pthread_mutex_t *fork, \
-char	**argv, t_common *common);
+char **argv, t_common *common);
 void	init_mutex(t_common *common);
 void	start_routine(t_philo *ph, pthread_t watcher, pthread_mutex_t *fork);
 void	destroy_threads(t_philo *ph, t_common *common, pthread_mutex_t *fork);

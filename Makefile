@@ -13,7 +13,7 @@ SRC = main philo philo_utilities utils watcher
 SRCS = $(addprefix $(SRCS_DIR)/, $(addsuffix .c, $(SRC)))
 OBJS = $(addprefix $(OBJS_DIR)/, $(addsuffix .o, $(SRC)))
 
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
 
 BLUE=\033[0;34m
 

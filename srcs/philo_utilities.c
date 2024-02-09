@@ -12,16 +12,33 @@
 
 #include "../includes/philo.h"
 
-void	take_forks(t_philo *philo)
+void take_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->fork_left);
-	if (check_end(philo) == END)
+	pthread_mutex_t *first_fork;
+	pthread_mutex_t *second_fork;
+
+	first_fork = philo->fork_left;
+	second_fork = philo->fork_right;
+	if (philo->fork_left > philo->fork_right)
+	{
+		first_fork = philo->fork_right;
+		second_fork = philo->fork_left;
+	}
+	if (pthread_mutex_lock(first_fork) == 0 && check_end(philo) == CONTINUE)
+			print_timestamp("has taken his left fork", philo, 1);
+	else
+	{
+		pthread_mutex_unlock(first_fork);
 		return ;
-	print_timestamp("has taken his left fork", philo, 1);
-	pthread_mutex_lock(philo->fork_right);
-	if (check_end(philo) == END)
+	}
+	if (pthread_mutex_lock(second_fork) == 0 && check_end(philo) == CONTINUE)
+			print_timestamp("has taken his right fork", philo, 1);
+	else
+	{
+		pthread_mutex_unlock(first_fork);
+		pthread_mutex_unlock(second_fork);
 		return ;
-	print_timestamp("has taken his right fork", philo, 1);
+	}
 }
 
 void	put_forks(t_philo *philosopher)

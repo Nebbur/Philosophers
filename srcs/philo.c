@@ -33,9 +33,8 @@ char **argv, t_common *common)
 		ph[ph[0].i].ending_flag = CONTINUE;
 		ph[ph[0].i].eating_flag = NOTEATING;
 		ph[ph[0].i].fork_left = &fork[ph[0].i];
-		if (ph[0].i == ph[0].philo_amount - 1)
-			ph[ph[0].i].fork_right = &fork[0];
-		else
+		ph[ph[0].i].fork_right = &fork[0];
+		if (ph[0].i != ph[0].philo_amount - 1)
 			ph[ph[0].i].fork_right = &fork[ph[0].i + 1];
 		ph[ph[0].i].common = common;
 	}
@@ -43,24 +42,19 @@ char **argv, t_common *common)
 
 void	ft_dinner(t_philo *philo)
 {
-	if (check_end(philo) == END)
-		return ;
 	take_forks(philo);
-	pthread_mutex_lock(&philo->common->eat);
 	if (check_end(philo) == END)
-	{
-		pthread_mutex_unlock(&philo->common->eat);
-		pthread_mutex_unlock(philo->fork_left);
-		pthread_mutex_unlock(philo->fork_right);
 		return ;
-	}
+	pthread_mutex_lock(&philo->common->eat);
 	print_timestamp("is eating", philo, 0);
 	philo->eating_flag = EATING;
 	philo->actual_meal++;
 	philo->last_meal = get_current_time();
 	pthread_mutex_unlock(&philo->common->eat);
 	usleep(philo->time_to_eat * 1000);
+	pthread_mutex_lock(&philo->common->eat);
 	philo->eating_flag = NOTEATING;
+	pthread_mutex_unlock(&philo->common->eat);
 	pthread_mutex_unlock(philo->fork_left);
 	pthread_mutex_unlock(philo->fork_right);
 }
@@ -70,7 +64,7 @@ void	*philosopher_action(void *pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *)pointer;
-	if (philo->philosopher_number % 2 != 0)
+	if (philo->philosopher_number % 2 == 0)
 		usleep(1000);
 	while (check_end(philo) == CONTINUE)
 	{
@@ -82,7 +76,7 @@ void	*philosopher_action(void *pointer)
 		if (check_end(philo) == END)
 			break ;
 		print_timestamp("is thinking", philo, 0);
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
 }

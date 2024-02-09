@@ -87,8 +87,8 @@ int	main(int argc, char *argv[])
 	memset(&common, 0, sizeof(t_common));
 	memset(&philosopher_info, 0, sizeof(t_philo));
 	memset(&the_watcher, 0, sizeof(pthread_t));
-	init_philo(philosopher_info, fork, argv, &common);
 	init_mutex(&common);
+	init_philo(philosopher_info, fork, argv, &common);
 	if (philosopher_info[0].philo_amount == 1)
 	{
 		print_timestamp("has token his left fork", &philosopher_info[0], 1);

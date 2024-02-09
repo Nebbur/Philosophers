@@ -31,7 +31,7 @@ void	*watcher_routine(void *pointer)
 
 	ph = (t_philo *)pointer;
 	while (1)
-		if (search_deads(ph) == 1 || check_every1_ate(ph) == 1)
+		if (search_deads(ph) == SOME1DIED || check_every1_ate(ph) == EVERY1ATE)
 			break ;
 	return (pointer);
 }
@@ -50,7 +50,7 @@ int	search_deads(t_philo *ph)
 			ft_ending(ph);
 			print_timestamp("died", ph, 2);
 			pthread_mutex_unlock(&ph->common->eat);
-			return (1);
+			return (SOME1DIED);
 		}
 		pthread_mutex_unlock(&ph->common->eat);
 	}
@@ -64,20 +64,23 @@ int	check_every1_ate(t_philo *ph)
 
 	i = -1;
 	meal_num_reached = 0;
-	if (ph[0].num_times_to_eat == 0)
+	if (ph[0].num_times_to_eat == 0 || ph[0].num_times_to_eat == -1)
+	{
 		return (0);
+	}
 	while (++i < ph[0].philo_amount)
 	{
 		pthread_mutex_lock(&ph->common->eat);
 		if (ph[0].num_times_to_eat != -1 && ph[i].actual_meal \
 		>= ph[0].num_times_to_eat)
 			meal_num_reached++;
+		if (meal_num_reached == ph[0].philo_amount)
+		{
+			pthread_mutex_unlock(&ph->common->eat);
+			ft_ending(ph);
+			return (EVERY1ATE);
+		}
 		pthread_mutex_unlock(&ph->common->eat);
-	}
-	if (meal_num_reached == ph[0].philo_amount)
-	{
-		ft_ending(ph);
-		return (1);
 	}
 	return (0);
 }

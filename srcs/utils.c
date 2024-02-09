@@ -21,7 +21,7 @@ int	ft_atoi(const char *str)
 	i = 0;
 	neg = 1;
 	res = 0;
-	while (str[i] == '\t' || str[i] == '\n' || str[i] == '\v' || 
+	while (str[i] == '\t' || str[i] == '\n' || str[i] == '\v' ||
 		str[i] == '\r' || str[i] == '\f' || str[i] == ' ')
 		i++;
 	if (str[i] == '-')
@@ -55,6 +55,11 @@ void	print_timestamp(char *action, t_philo *philosopher, int color)
 	else if (color == 2)
 		color_code = RED;
 	pthread_mutex_lock(&philosopher->common->print);
+	if (color != 2 && check_end(philosopher) == END)
+	{
+		pthread_mutex_unlock(&philosopher->common->print);
+		return ;
+	}
 	current_time = get_current_time() - philosopher->start_time;
 	printf("%s%03d %s%d %s%s\n", YELLOW, current_time, BLUE, \
 		philosopher->philosopher_number, color_code, action);
@@ -65,11 +70,8 @@ void	destroy_mutex(char *s, t_philo *ph, pthread_mutex_t *fork)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	printf("%s\n", s);
-	while (i < ph[0].philo_amount)
-	{
+	while (++i < ph[0].philo_amount)
 		pthread_mutex_destroy(&fork[i]);
-		i++;
-	}
 }
