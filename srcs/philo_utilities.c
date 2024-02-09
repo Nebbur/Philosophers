@@ -25,19 +25,18 @@ void take_forks(t_philo *philo)
 		second_fork = philo->fork_left;
 	}
 	if (pthread_mutex_lock(first_fork) == 0 && check_end(philo) == CONTINUE)
-			print_timestamp("has taken his left fork", philo, 1);
+		print_timestamp("has taken his left fork", philo, 1);
 	else
 	{
 		pthread_mutex_unlock(first_fork);
 		return ;
 	}
 	if (pthread_mutex_lock(second_fork) == 0 && check_end(philo) == CONTINUE)
-			print_timestamp("has taken his right fork", philo, 1);
+		print_timestamp("has taken his right fork", philo, 1);
 	else
 	{
 		pthread_mutex_unlock(first_fork);
 		pthread_mutex_unlock(second_fork);
-		return ;
 	}
 }
 
