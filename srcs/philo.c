@@ -12,32 +12,50 @@
 
 #include "../includes/philo.h"
 
-void	init_philo(t_philo *ph, pthread_mutex_t *fork, \
-char **argv, t_common *common)
+void take_forks(t_philo *philo)
 {
-	ph[0].i = -1;
-	while (++ph[0].i < ft_atoi(argv[1]))
+	pthread_mutex_t *first_fork;
+	pthread_mutex_t *second_fork;
+
+	first_fork = philo->fork_left;
+	second_fork = philo->fork_right;
+	if (philo->fork_left > philo->fork_right)
 	{
-		pthread_mutex_init(&fork[ph[0].i], NULL);
-		ph[ph[0].i].philosopher_number = ph[0].i + 1;
-		ph[ph[0].i].philo_amount = ft_atoi(argv[1]);
-		ph[ph[0].i].time_to_die = ft_atoi(argv[2]);
-		ph[ph[0].i].time_to_eat = ft_atoi(argv[3]);
-		ph[ph[0].i].time_to_sleep = ft_atoi(argv[4]);
-		ph[ph[0].i].num_times_to_eat = -1;
-		if (argv[5] != NULL)
-			ph[ph[0].i].num_times_to_eat = ft_atoi(argv[5]);
-		ph[ph[0].i].actual_meal = 0;
-		ph[ph[0].i].last_meal = get_current_time();
-		ph[ph[0].i].start_time = get_current_time();
-		ph[ph[0].i].ending_flag = CONTINUE;
-		ph[ph[0].i].eating_flag = NOTEATING;
-		ph[ph[0].i].fork_left = &fork[ph[0].i];
-		ph[ph[0].i].fork_right = &fork[0];
-		if (ph[0].i != ph[0].philo_amount - 1)
-			ph[ph[0].i].fork_right = &fork[ph[0].i + 1];
-		ph[ph[0].i].common = common;
+		first_fork = philo->fork_right;
+		second_fork = philo->fork_left;
 	}
+	if (pthread_mutex_lock(first_fork) == 0 && check_end(philo) == CONTINUE)
+		print_timestamp("has taken his left fork", philo, 1);
+	else
+	{
+		pthread_mutex_unlock(first_fork);
+		return ;
+	}
+	if (pthread_mutex_lock(second_fork) == 0 && check_end(philo) == CONTINUE)
+		print_timestamp("has taken his right fork", philo, 1);
+	else
+	{
+		pthread_mutex_unlock(first_fork);
+		pthread_mutex_unlock(second_fork);
+	}
+}
+
+void	put_forks(t_philo *philosopher)
+{
+	pthread_mutex_unlock(philosopher->fork_left);
+	pthread_mutex_unlock(philosopher->fork_right);
+}
+
+int	check_end(t_philo *ph)
+{
+	pthread_mutex_lock(&ph->common->end);
+	if (ph->ending_flag == CONTINUE)
+	{
+		pthread_mutex_unlock(&ph->common->end);
+		return (CONTINUE);
+	}
+	pthread_mutex_unlock(&ph->common->end);
+	return (END);
 }
 
 void	ft_dinner(t_philo *philo)

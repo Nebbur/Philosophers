@@ -8,7 +8,7 @@ INCS = ./includes
 SRCS_DIR = ./srcs
 OBJS_DIR = ./objs
 
-SRC = main philo philo_utilities utils watcher
+SRC = main philo utils watcher
 
 SRCS = $(addprefix $(SRCS_DIR)/, $(addsuffix .c, $(SRC)))
 OBJS = $(addprefix $(OBJS_DIR)/, $(addsuffix .o, $(SRC)))

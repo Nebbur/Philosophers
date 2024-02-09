@@ -12,11 +12,32 @@
 
 #include "../includes/philo.h"
 
-void	init_mutex(t_common *common)
+void	init_philo(t_philo *ph, pthread_mutex_t *fork, \
+char **argv, t_common *common)
 {
-	pthread_mutex_init(&common->print, NULL);
-	pthread_mutex_init(&common->eat, NULL);
-	pthread_mutex_init(&common->end, NULL);
+	ph[0].i = -1;
+	while (++ph[0].i < ft_atoi(argv[1]))
+	{
+		pthread_mutex_init(&fork[ph[0].i], NULL);
+		ph[ph[0].i].philosopher_number = ph[0].i + 1;
+		ph[ph[0].i].philo_amount = ft_atoi(argv[1]);
+		ph[ph[0].i].time_to_die = ft_atoi(argv[2]);
+		ph[ph[0].i].time_to_eat = ft_atoi(argv[3]);
+		ph[ph[0].i].time_to_sleep = ft_atoi(argv[4]);
+		ph[ph[0].i].num_times_to_eat = -1;
+		if (argv[5] != NULL)
+			ph[ph[0].i].num_times_to_eat = ft_atoi(argv[5]);
+		ph[ph[0].i].actual_meal = 0;
+		ph[ph[0].i].last_meal = get_current_time();
+		ph[ph[0].i].start_time = get_current_time();
+		ph[ph[0].i].ending_flag = CONTINUE;
+		ph[ph[0].i].eating_flag = NOTEATING;
+		ph[ph[0].i].fork_left = &fork[ph[0].i];
+		ph[ph[0].i].fork_right = &fork[0];
+		if (ph[0].i != ph[0].philo_amount - 1)
+			ph[ph[0].i].fork_right = &fork[ph[0].i + 1];
+		ph[ph[0].i].common = common;
+	}
 }
 
 void	destroy_threads(t_philo *ph, t_common *common, pthread_mutex_t *fork)
@@ -87,7 +108,9 @@ int	main(int argc, char *argv[])
 	memset(&common, 0, sizeof(t_common));
 	memset(&philosopher_info, 0, sizeof(t_philo));
 	memset(&the_watcher, 0, sizeof(pthread_t));
-	init_mutex(&common);
+	pthread_mutex_init(&common.print, NULL);
+	pthread_mutex_init(&common.eat, NULL);
+	pthread_mutex_init(&common.end, NULL);
 	init_philo(philosopher_info, fork, argv, &common);
 	if (philosopher_info[0].philo_amount == 1)
 	{
